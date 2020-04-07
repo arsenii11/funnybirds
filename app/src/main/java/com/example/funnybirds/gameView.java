@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 
+
 public class gameView extends View{
 
     private Sprite playerBird;
@@ -90,11 +91,25 @@ public class gameView extends View{
         playerBird.draw(canvas);
         enemyBird.draw(canvas);
 
+        Paint g = new Paint();
+        g.setAntiAlias(true);
+        g.setColor(Color.BLACK);
+        canvas.drawCircle(getWidth() -140, getHeight() -2140, 75, g);
+
         Paint p = new Paint();
         p.setAntiAlias(true);
-        p.setTextSize(55.0f);
+        p.setTextSize(70.0f);
         p.setColor(Color.WHITE);
-        canvas.drawText(points + "", viewWidth - 200, 70, p);
+        p.setStyle(Paint.Style.FILL);
+
+        if(points > 9 ){
+            canvas.drawText(points + "", viewWidth - 150, 140, p);}
+        else if(points < -9 ){
+            canvas.drawText(points + "", viewWidth - 200, 140, p);}
+        else if(points < 10 && points > -10  )
+            canvas.drawText(points + "", viewWidth - 180, 140, p);
+
+
     }
 
     protected void update () {
@@ -168,4 +183,7 @@ public class gameView extends View{
 
         }
     }
+
+
+
 }
