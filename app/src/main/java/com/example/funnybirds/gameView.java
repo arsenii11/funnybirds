@@ -20,10 +20,10 @@ public class gameView extends View{
     private Sprite enemyBird;
 
 
-    private int viewWidth;
-    private int viewHeight;
+    public static int viewWidth;
+    public static int viewHeight;
 
-    private int points = 0;
+    public static int points = 0;
 
     private final int timerInterval = 30;
 
@@ -108,8 +108,6 @@ public class gameView extends View{
             canvas.drawText(points + "", viewWidth - 200, 140, p);}
         else if(points < 10 && points > -10  )
             canvas.drawText(points + "", viewWidth - 180, 140, p);
-
-
     }
 
     protected void update () {
