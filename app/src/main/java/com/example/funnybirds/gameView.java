@@ -103,11 +103,13 @@ public class gameView extends View{
         p.setStyle(Paint.Style.FILL);
 
         if(points > 9 ){
-            canvas.drawText(points + "", viewWidth - 150, 140, p);}
+            canvas.drawText(points + "", viewWidth - 180, 140, p);}
         else if(points < -9 ){
             canvas.drawText(points + "", viewWidth - 200, 140, p);}
-        else if(points < 10 && points > -10  )
-            canvas.drawText(points + "", viewWidth - 180, 140, p);
+        else if(points < 0 && points > -10 ){
+            canvas.drawText(points + "", viewWidth - 170, 140, p);}
+        else if(points < 10 && points >= 0 ){
+            canvas.drawText(points + "", viewWidth - 165, 140, p);}
     }
 
     protected void update () {
