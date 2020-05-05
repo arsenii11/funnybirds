@@ -2,8 +2,10 @@ package com.example.funnybirds;
 
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Picture;
 import android.graphics.Rect;
 
 import java.util.ArrayList;
@@ -148,6 +150,13 @@ import java.util.List;
         x = x + velocityX * ms/1000.0;
         y = y + velocityY * ms/1000.0;
     }
+
+    public void drawC(Canvas canvas) {
+        Paint c = new Paint();
+        Rect corona = new Rect((int)x, (int)y,(int)(frameWidth), (int)(frameHeight));
+        canvas.drawBitmap(bitmap,frames.get(currentFrame), corona, c);
+    }
+
     public void draw (Canvas canvas) {
         Paint p = new Paint();
 

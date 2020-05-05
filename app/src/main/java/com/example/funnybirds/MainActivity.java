@@ -4,18 +4,26 @@ package com.example.funnybirds;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import static com.example.funnybirds.gameView.points;
 
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
         setContentView(new gameView(this));
-
+        if(points>=100 || points <= -100){
+            setContentView(R.layout.activity_main);
+        }
     }
+
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -26,14 +34,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        int id = item.getItemId();
         if (id == R.id.action_settings) {
             return true;
+        }
+        if(item.getItemId() == R.id.action_pause){
+            Toast.makeText(this, "Pause", Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
