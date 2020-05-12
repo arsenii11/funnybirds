@@ -8,10 +8,10 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.CountDownTimer;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
+
+
 
 
 public class gameView extends View{
@@ -24,14 +24,32 @@ public class gameView extends View{
     private Sprite coronavirus;
 
 
+    public static boolean Level2 = false;
+    public static boolean finish = false;
     public static int viewWidth;
     public static int viewHeight;
 
+    public static int points = 10;
+    public static int points2 = 0;
+    public int points3 = 0;
 
-
-    public static int points = 0;
 
     private final int timerInterval = 30;
+
+
+    public boolean Finish(){
+        if(points>100){
+            Level2 = true;
+        }
+        if (Level2 && points<100){
+            finish = true;
+        }
+        else if (points<0){
+            finish = true;
+        }
+        return finish;
+    }
+
 
     public gameView(Context context) {
         super(context);
@@ -57,7 +75,7 @@ public class gameView extends View{
         b = BitmapFactory.decodeResource(getResources(), R.drawable.coronavirus);
         w = b.getWidth()/3;
         h = b.getHeight();
-        firstFrame = new Rect(2*w, 0, 3*w, h);
+        firstFrame = new Rect(2*w, 0, 3*w, 3*h);
 
         coronavirus = new Sprite(2000, 250, -300, 10, firstFrame, b);
 
@@ -124,6 +142,14 @@ public class gameView extends View{
 
 
 
+
+
+
+
+
+
+
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -139,11 +165,12 @@ public class gameView extends View{
         y.setStyle(Paint.Style.FILL_AND_STROKE);
 
 
-        if (points >= 100) {
+        if (points >= 200) {
             canvas.drawText("You win ", viewWidth/6, viewHeight/2, y);
         }
-        else if(points <= -100){
-            canvas.drawText("You lose ",viewWidth/6 , viewHeight/2, y);}
+        if(points<0||Finish()){
+            canvas.drawText("You lose ",viewWidth/6 , viewHeight/2, y);
+        }
 
         int ScoreColor = getResources().getColor(R.color.ScoreСolor);
 
@@ -161,59 +188,84 @@ public class gameView extends View{
 
 
 
-        if(points > 9 && points < 100){
-            canvas.drawText(points + "", viewWidth - 180, 140, p);}
-        else if(points < -9 && points > - 100){
-            canvas.drawText(points + "", viewWidth - 200, 140, p);}
-        else if(points < 0 && points > -10 ){
-            canvas.drawText(points + "", viewWidth - 170, 140, p);}
-        else if(points < 10 && points >= 0 ){
-            canvas.drawText(points + "", viewWidth - 165, 140, p);}
-        else if(points > 100 || points < -100){
-            canvas.drawText("xxx", viewWidth - 185, 140, p);
+        if(points <= 100){
+            points3 = points;}
+        else {
+            points3 = points-100;
+        }
+
+        if(points<=100){
+            canvas.drawText("Level 1", viewWidth-1000, 130,p);
+        }
+        else {
+            canvas.drawText("Level 2", viewWidth-1000, 130,p);
+        }
+
+
+        if(Finish()){
+            canvas.drawText("0", viewWidth - 165, 140, p);
+        }
+        else if(points3 > 9 && points3 < 100){
+            canvas.drawText(points3 + "", viewWidth - 180, 140, p);}
+        else if(points3 < 10 && points3 >= 0 ){
+            canvas.drawText(points3 + "", viewWidth - 165, 140, p);}
+        else if(points3 > 100 ){
+            canvas.drawText(points3 + "", viewWidth - 200, 140, p);
+        }
+        if(Finish()){
+            canvas.drawText("0", viewWidth - 165, 140, p);
+        }
+
+
+
+    }
+
+
+
+
+    public void update () {
+        if(MainActivity.PauseFlag &&(points >= 0 && points < 200)&& !Finish()){
+
+            playerBird.update(timerInterval);
+            enemyBird.update(timerInterval);
+            coronavirus.update(timerInterval);
+
+            if (playerBird.getY() + playerBird.getFrameHeight() > viewHeight) {
+                playerBird.setY(viewHeight - playerBird.getFrameHeight());
+                playerBird.setVy(-playerBird.getVy());
+                points--;
+            } else if (playerBird.getY() < 0) {
+                playerBird.setY(0);
+                playerBird.setVy(-playerBird.getVy());
+                points--;
+            }
+
+            if (enemyBird.getX() < -enemyBird.getFrameWidth()) {
+                teleportEnemy();
+                points += 10;
+            }
+
+            if (enemyBird.intersect(playerBird)) {
+                teleportEnemy();
+                points -= 20;
+            }
+
+           if (coronavirus.getX() < -coronavirus.getFrameWidth()) {
+                teleportCoronavirus();
+                points -= 10;
+            }
+
+            if (coronavirus.intersect(playerBird)) {
+                teleportCoronavirus();
+                points += 40;
+            }
+
+
+            invalidate();
         }
     }
 
-    protected void update () {
-        if (points >= -100 && points <= 100){
-        playerBird.update(timerInterval);
-        enemyBird.update(timerInterval);
-        coronavirus.update(timerInterval);
 
-        if (playerBird.getY() + playerBird.getFrameHeight() > viewHeight) {
-            playerBird.setY(viewHeight - playerBird.getFrameHeight());
-            playerBird.setVy(-playerBird.getVy());
-            points--;
-        }
-        else if (playerBird.getY() < 0) {
-            playerBird.setY(0);
-            playerBird.setVy(-playerBird.getVy());
-            points--;
-        }
-
-        if (enemyBird.getX() < - enemyBird.getFrameWidth()) {
-            teleportEnemy();
-            points +=10;
-        }
-
-        if (enemyBird.intersect(playerBird)) {
-            teleportEnemy ();
-            points -= 40;
-        }
-
-        if (coronavirus.getX() < - coronavirus.getFrameWidth()) {
-            teleportCoronavirus();
-            points -=10;
-        }
-
-        if (coronavirus.intersect(playerBird)) {
-            teleportCoronavirus ();
-            points += 20;
-        }
-
-
-        invalidate();}
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -233,6 +285,7 @@ public class gameView extends View{
 
         return true;
     }
+
 
 
     private void teleportEnemy () {
@@ -264,7 +317,6 @@ public class gameView extends View{
         coronavirus.setX(viewWidth + Math.random() * 500);
         coronavirus.setY(Math.random() * (viewHeight - coronavirus.getFrameHeight()));
     }
-
 
 
     }
